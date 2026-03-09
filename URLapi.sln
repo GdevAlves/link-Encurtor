@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "URLapi.Api", "URLapi.Api\URLapi.Api.csproj", "{38A15BFD-00D5-4198-846D-45B20A21C98B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "URLapi.Domain", "URLapi.Domain\URLapi.Domain.csproj", "{FF8F0A6A-4BAE-4D54-B028-E2F75A80AC71}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "URLapi.Infra", "URLapi.Infra\URLapi.Infra.csproj", "{ABD17886-B05E-444D-A4AB-0F2AFEF976B9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{38A15BFD-00D5-4198-846D-45B20A21C98B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38A15BFD-00D5-4198-846D-45B20A21C98B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38A15BFD-00D5-4198-846D-45B20A21C98B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38A15BFD-00D5-4198-846D-45B20A21C98B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF8F0A6A-4BAE-4D54-B028-E2F75A80AC71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF8F0A6A-4BAE-4D54-B028-E2F75A80AC71}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF8F0A6A-4BAE-4D54-B028-E2F75A80AC71}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF8F0A6A-4BAE-4D54-B028-E2F75A80AC71}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ABD17886-B05E-444D-A4AB-0F2AFEF976B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABD17886-B05E-444D-A4AB-0F2AFEF976B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABD17886-B05E-444D-A4AB-0F2AFEF976B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABD17886-B05E-444D-A4AB-0F2AFEF976B9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
