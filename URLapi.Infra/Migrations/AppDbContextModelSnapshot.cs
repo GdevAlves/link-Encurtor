@@ -27,6 +27,10 @@ namespace URLapi.Infra.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("char(36)");
 
+                    b.Property<int>("AccessCount")
+                        .HasColumnType("int")
+                        .HasColumnName("AccessCount");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("CreatedAt");

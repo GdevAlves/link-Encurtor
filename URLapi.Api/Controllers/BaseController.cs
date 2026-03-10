@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using IResult = URLapi.Domain.Abstractions.IResult;
+using IResult = URLapi.Application.Abstractions.IResult;
 
 namespace URLapi.Api.Controllers;
 

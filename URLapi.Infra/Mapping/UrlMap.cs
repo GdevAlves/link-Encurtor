@@ -42,5 +42,9 @@ public class UrlMap : IEntityTypeConfiguration<Url>
         builder.Property(x => x.ModifiedAt)
             .HasColumnName("ModifiedAt")
             .IsRequired();
+        
+        builder.Property(x => x.AccessCount)
+            .HasColumnName("AccessCount")
+            .IsRequired();
     }
 }

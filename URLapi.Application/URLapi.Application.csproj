@@ -5,10 +5,14 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
-
+    
     <ItemGroup>
         <PackageReference Include="Flunt" Version="2.0.5"/>
         <PackageReference Include="Mediator.Abstractions" Version="3.0.*-*"/>
     </ItemGroup>
-
+    
+    <ItemGroup>
+      <ProjectReference Include="..\URLapi.Domain\URLapi.Domain.csproj" />
+    </ItemGroup>
+    
 </Project>

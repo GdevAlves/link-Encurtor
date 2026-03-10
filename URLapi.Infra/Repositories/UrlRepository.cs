@@ -36,4 +36,10 @@ public class UrlRepository(AppDbContext context) : IUrlRepository
             .Include(x => x.Creator)
             .FirstOrDefaultAsync(x => x.ShortUrl == shortUrl, cancellationToken);
     }
+
+    public async Task UpdateAsync(Url url, CancellationToken cancellationToken)
+    {
+        context.Urls.Update(url);
+        await context.SaveChangesAsync(cancellationToken);
+    }
 }

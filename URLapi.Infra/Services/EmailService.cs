@@ -52,6 +52,6 @@ public class EmailService(IOptions<EmailSettings> settings) : IVerificateUserSer
     private static string WriteVerificationEmailBody(string token)
     {
         return
-            @$"http://localhost:5106/v1/users/verify-{token}"; // TODO colocar porta da aplicação, tentar pegar pelo Asembly
+            @$"http://localhost:5106/v1/user/verify-{token}"; // TODO colocar porta da aplicação, tentar pegar pelo Asembly
     }
 }

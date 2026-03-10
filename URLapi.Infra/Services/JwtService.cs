@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using URLapi.Domain.Config;
-using URLapi.Domain.DTOs.UserDTO;
+using URLapi.Domain.Entities;
 using URLapi.Domain.IServices;
 
 namespace URLapi.Infra.Services;
@@ -13,13 +13,13 @@ public class JwtService(IOptions<JwtSettings> settings) : IAuthService
 {
     private readonly JwtSettings _settings = settings.Value;
 
-    public string GenerateJwtToken(UserAuthorizedDTO user)
+    public string GenerateJwtToken(User user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.UTF8.GetBytes(_settings.Secret);
         var claims = new List<Claim>
         {
-            new(ClaimTypes.Email, user.Email),
+            new(ClaimTypes.Email, user.Email.Address),
             new(JwtRegisteredClaimNames.Sub, user.Id.ToString())
         };
         var tokenDescription = new SecurityTokenDescriptor

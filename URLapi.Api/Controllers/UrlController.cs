@@ -1,8 +1,8 @@
 ﻿using Mediator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using URLapi.Domain.UseCases.Commands.Urls;
-using URLapi.Domain.UseCases.Queries.Urls;
+using URLapi.Application.UseCases.Commands.Urls;
+using URLapi.Application.UseCases.Queries.Urls;
 
 namespace URLapi.Api.Controllers;
 

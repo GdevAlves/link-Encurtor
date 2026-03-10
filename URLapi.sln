@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "URLapi.Domain", "URLapi.Dom
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "URLapi.Infra", "URLapi.Infra\URLapi.Infra.csproj", "{ABD17886-B05E-444D-A4AB-0F2AFEF976B9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "URLapi.Application", "URLapi.Application\URLapi.Application.csproj", "{9E876A9C-4A0E-4EE5-921D-BBB9B3F28538}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{ABD17886-B05E-444D-A4AB-0F2AFEF976B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ABD17886-B05E-444D-A4AB-0F2AFEF976B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ABD17886-B05E-444D-A4AB-0F2AFEF976B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E876A9C-4A0E-4EE5-921D-BBB9B3F28538}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E876A9C-4A0E-4EE5-921D-BBB9B3F28538}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E876A9C-4A0E-4EE5-921D-BBB9B3F28538}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E876A9C-4A0E-4EE5-921D-BBB9B3F28538}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

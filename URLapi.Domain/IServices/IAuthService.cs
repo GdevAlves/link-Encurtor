@@ -1,8 +1,9 @@
-﻿using URLapi.Domain.DTOs.UserDTO;
+﻿using URLapi.Domain.Entities;
 
-namespace URLapi.Domain.IServices;
-
-public interface IAuthService
+namespace URLapi.Domain.IServices
 {
-    string GenerateJwtToken(UserAuthorizedDTO user);
+    public interface IAuthService
+    {
+        string GenerateJwtToken(User user);
+    }
 }

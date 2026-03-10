@@ -9,4 +9,5 @@ public interface IUrlRepository
     Task<Url?> GetUrlByIdAsync(Guid urlId, CancellationToken cancellationToken);
     Task DeleteUrlAsync(Url url, CancellationToken cancellationToken);
     Task<Url?> GetUrlByShortUrlWithCreatorAsync(string shortUrl, CancellationToken cancellationToken);
+    Task UpdateAsync(Url url, CancellationToken cancellationToken);
 }
