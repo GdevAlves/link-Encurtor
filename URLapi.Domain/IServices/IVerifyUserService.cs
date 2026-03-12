@@ -2,7 +2,7 @@
 
 namespace URLapi.Domain.IServices;
 
-public interface IVerificateUserService
+public interface IVerifyUserService
 {
     Task SendVerificationAsync(User user, CancellationToken cancellationToken);
 }

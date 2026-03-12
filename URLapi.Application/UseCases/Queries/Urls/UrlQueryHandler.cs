@@ -1,10 +1,11 @@
-﻿using System.Net;
+﻿﻿using System.Net;
 using Flunt.Notifications;
 using Flunt.Validations;
 using Mediator;
 using URLapi.Application.DTOs.UrlDTO;
 using URLapi.Application.Events;
 using URLapi.Application.UseCases.Commands;
+using URLapi.Domain.Entities;
 using URLapi.Domain.IRepositories;
 using URLapi.Domain.IServices;
 using IResult = URLapi.Application.Abstractions.IResult;
@@ -13,6 +14,8 @@ namespace URLapi.Application.UseCases.Queries.Urls;
 
 public class UrlQueryHandler(
     IUrlRepository urlRepository,
+    IUrlAccessRepository urlAccessRepository,
+    IAccessService accessService,
     ICurrentUserService currentUserService,
     IMediator mediator
 )
@@ -33,9 +36,21 @@ public class UrlQueryHandler(
 
         if (bigUrl == null)
             return new Result(HttpStatusCode.NotFound, false, "URL not found.");
-
+        
         await mediator.Publish(new UrlAccessedEvent(bigUrl.Id), cancellationToken);
 
+        var access = new UrlAccessLog
+        {
+            UrlId = bigUrl.Id,
+            AccessedAt = DateTime.UtcNow,
+            UserAgent = accessService.GetUserAgent(),
+            IpAddress = accessService.GetIpAddress(),
+            Referer = accessService.GetReferer(),
+            Country = "", // TODO 
+            City = ""
+        };
+        
+        await urlAccessRepository.SaveAsync(access, cancellationToken);
         return new Result(HttpStatusCode.OK, true, "success", bigUrl.LongUrl);
     }
 

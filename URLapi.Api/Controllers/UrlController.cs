@@ -1,4 +1,4 @@
-﻿using Mediator;
+﻿﻿using Mediator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using URLapi.Application.UseCases.Commands.Urls;
@@ -67,6 +67,16 @@ public class UrlController(IMediator mediator) : BaseController
             Id = id
         };
         var result = await mediator.Send(command);
+        return HandleResult(result);
+    }
+    // TODO Rota que lista todas as URL do usuário paginadas.
+
+    // TODO Rotas/Controller de analytcs 
+    [Authorize]
+    [HttpPost("ai")]
+    public async Task<IActionResult> AiQuestion([FromBody] AiQuestionQuery query)
+    {
+        var result = await mediator.Send(query);
         return HandleResult(result);
     }
 }

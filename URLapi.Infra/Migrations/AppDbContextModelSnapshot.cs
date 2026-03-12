@@ -64,6 +64,45 @@ namespace URLapi.Infra.Migrations
                     b.ToTable("Urls", (string)null);
                 });
 
+            modelBuilder.Entity("URLapi.Domain.Entities.UrlAccessLog", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("AccessedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("City")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Country")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("IpAddress")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Referer")
+                        .HasColumnType("longtext");
+
+                    b.Property<Guid>("UrlId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("UserAgent")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UrlId");
+
+                    b.ToTable("UrlAccessLog", (string)null);
+                });
+
             modelBuilder.Entity("URLapi.Domain.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -95,6 +134,17 @@ namespace URLapi.Infra.Migrations
                         .IsRequired();
 
                     b.Navigation("Creator");
+                });
+
+            modelBuilder.Entity("URLapi.Domain.Entities.UrlAccessLog", b =>
+                {
+                    b.HasOne("URLapi.Domain.Entities.Url", "Url")
+                        .WithMany()
+                        .HasForeignKey("UrlId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Url");
                 });
 
             modelBuilder.Entity("URLapi.Domain.Entities.User", b =>

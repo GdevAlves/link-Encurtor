@@ -8,7 +8,7 @@ using URLapi.Domain.IServices;
 
 namespace URLapi.Infra.Services;
 
-public class EmailService(IOptions<EmailSettings> settings) : IVerificateUserService
+public class EmailService(IOptions<EmailSettings> settings) : IVerifyUserService
 {
     private readonly EmailSettings _settings = settings.Value;
 

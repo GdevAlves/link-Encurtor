@@ -1,4 +1,4 @@
-﻿using URLapi.Domain.IRepositories;
+﻿﻿using URLapi.Domain.IRepositories;
 using URLapi.Domain.IServices;
 using URLapi.Infra.Repositories;
 using URLapi.Infra.Services;
@@ -14,5 +14,6 @@ public static class UrlContextExtension
 
         // Services
         builder.Services.AddScoped<IUrlService, UrlService>();
+        builder.Services.AddScoped<IAccessService, AccessService>();
     }
 }

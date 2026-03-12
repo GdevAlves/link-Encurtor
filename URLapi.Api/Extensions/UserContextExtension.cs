@@ -27,7 +27,7 @@ public static class UserContextExtension
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
-        builder.Services.AddScoped<IVerificateUserService, EmailService>();
+        builder.Services.AddScoped<IVerifyUserService, EmailService>();
         builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {

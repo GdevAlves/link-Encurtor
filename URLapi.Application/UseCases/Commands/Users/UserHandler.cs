@@ -13,7 +13,7 @@ namespace URLapi.Application.UseCases.Commands.Users;
 
 public sealed class UserCommandHandler(
     IUserRepository userRepository,
-    IVerificateUserService verificateUserService,
+    IVerifyUserService verifyUserService,
     IPasswordHasher passwordHasher,
     IAuthService authService)
     : IRequestHandler<CreateUserCommand, IResult>,
@@ -77,7 +77,7 @@ public sealed class UserCommandHandler(
         // Send verification email
         try
         {
-            await verificateUserService.SendVerificationAsync(user, cancellationToken);
+            await verifyUserService.SendVerificationAsync(user, cancellationToken);
         }
         catch
         {

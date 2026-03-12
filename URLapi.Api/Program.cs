@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Scalar.AspNetCore;
 using URLapi.Api.Extensions;
 using URLapi.Infra.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 
 // Add CORS policy
@@ -33,6 +33,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 );
 
 builder.Services.AddHttpContextAccessor();
+
+// AI (Gemini) - API key vem de configuration (User Secrets em Development): Gemini:ApiKey
+builder.AddAiContext();
 
 // Registrar Mediator (descoberta automática de handlers)
 // Handlers devem ser `Scoped` (ou `Transient`) quando dependem de serviços Scoped
@@ -89,6 +92,15 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Scalar UI
+app.MapScalarApiReference(options =>
+{
+    options
+        .WithTitle("Agent API") 
+        .WithTheme(ScalarTheme.Default)
+        .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
