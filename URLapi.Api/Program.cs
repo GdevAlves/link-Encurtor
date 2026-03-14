@@ -97,7 +97,7 @@ app.UseAuthorization();
 app.MapScalarApiReference(options =>
 {
     options
-        .WithTitle("Agent API") 
+        .WithTitle("Agent API")
         .WithTheme(ScalarTheme.Default)
         .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
 });

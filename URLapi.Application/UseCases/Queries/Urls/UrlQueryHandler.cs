@@ -1,4 +1,4 @@
-﻿﻿using System.Net;
+﻿using System.Net;
 using Flunt.Notifications;
 using Flunt.Validations;
 using Mediator;
@@ -19,7 +19,8 @@ public class UrlQueryHandler(
     ICurrentUserService currentUserService,
     IMediator mediator
 )
-    : Abstractions.IQueryHandler<GetBigUrlByShortUrlQuery, IResult>, Abstractions.IQueryHandler<GetUrlInfoByShortUrlQuery, IResult>
+    : Abstractions.IQueryHandler<GetBigUrlByShortUrlQuery, IResult>,
+        Abstractions.IQueryHandler<GetUrlInfoByShortUrlQuery, IResult>
 {
     public async ValueTask<IResult> Handle(GetBigUrlByShortUrlQuery query, CancellationToken cancellationToken)
     {
@@ -36,7 +37,7 @@ public class UrlQueryHandler(
 
         if (bigUrl == null)
             return new Result(HttpStatusCode.NotFound, false, "URL not found.");
-        
+
         await mediator.Publish(new UrlAccessedEvent(bigUrl.Id), cancellationToken);
 
         var access = new UrlAccessLog
@@ -49,7 +50,7 @@ public class UrlQueryHandler(
             Country = "", // TODO 
             City = ""
         };
-        
+
         await urlAccessRepository.SaveAsync(access, cancellationToken);
         return new Result(HttpStatusCode.OK, true, "success", bigUrl.LongUrl);
     }
@@ -80,7 +81,7 @@ public class UrlQueryHandler(
             Id = bigUrl.Id,
             ShortUrl = bigUrl.ShortUrl,
             LongUrl = bigUrl.LongUrl,
-            AccessCount = bigUrl.AccessCount,
+            AccessCount = bigUrl.AccessCount
         };
         return new Result(HttpStatusCode.OK, true, "success", urlDto);
     }

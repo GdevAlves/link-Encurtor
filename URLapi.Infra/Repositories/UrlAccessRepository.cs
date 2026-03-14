@@ -23,7 +23,7 @@ public class UrlAccessRepository(AppDbContext context) : IUrlAccessRepository
     public async Task<List<TopUrlDto>> GetTopUrlsAsync(Guid userId, int daysAgo, int limit)
     {
         var startDate = DateTime.UtcNow.AddDays(-daysAgo);
-        
+
         var query = await context.UrlAccessLogs
             .Where(log => log.Url.Creator.Id == userId && log.AccessedAt >= startDate)
             .GroupBy(log => new { log.UrlId, log.Url.ShortUrl, log.Url.LongUrl })
@@ -38,28 +38,28 @@ public class UrlAccessRepository(AppDbContext context) : IUrlAccessRepository
             .OrderByDescending(x => x.AccessCount)
             .Take(limit)
             .ToListAsync();
-        
+
         return query;
     }
 
     public async Task<AccessPatternDto> GetAccessPatternAsync(Guid urlId, int daysAgo)
     {
         var startDate = DateTime.UtcNow.AddDays(-daysAgo);
-        
+
         var hourlyPattern = await context.UrlAccessLogs
             .Where(log => log.UrlId == urlId && log.AccessedAt >= startDate)
             .GroupBy(log => log.AccessedAt.Hour)
             .Select(g => new { Hour = g.Key, Count = g.Count() })
             .OrderBy(x => x.Hour)
             .ToListAsync();
-        
+
         var dailyPattern = await context.UrlAccessLogs
             .Where(log => log.UrlId == urlId && log.AccessedAt >= startDate)
             .GroupBy(log => log.AccessedAt.Date)
             .Select(g => new { Date = g.Key, Count = g.Count() })
             .OrderBy(x => x.Date)
             .ToListAsync();
-        
+
         return new AccessPatternDto
         {
             HourlyDistribution = hourlyPattern.ToDictionary(x => x.Hour, x => x.Count),
@@ -68,7 +68,7 @@ public class UrlAccessRepository(AppDbContext context) : IUrlAccessRepository
             TotalAccesses = hourlyPattern.Sum(x => x.Count)
         };
     }
-    
+
     // public Task<GeographicDistributionDto> GetGeographicDistributionAsync(Guid urlId, int daysAgo)
     // {
     //     throw new NotImplementedException();

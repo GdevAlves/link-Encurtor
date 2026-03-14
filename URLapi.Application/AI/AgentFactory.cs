@@ -11,5 +11,4 @@ public class AgentFactory(string apiKey, IServiceProvider serviceProvider)
         var analyticsService = serviceProvider.GetRequiredService<IUrlAccessRepository>();
         return new UrlAnalyticsAgent(analyticsService, apiKey);
     }
-
 }

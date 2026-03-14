@@ -12,7 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Remove="IServices\IUrlAnalyticsService.cs" />
+        <Compile Remove="IServices\IUrlAnalyticsService.cs"/>
     </ItemGroup>
 
 </Project>

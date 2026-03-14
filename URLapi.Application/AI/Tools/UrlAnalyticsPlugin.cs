@@ -16,7 +16,7 @@ public class UrlAnalyticsPlugin(IUrlAccessRepository urlAccessRepository)
         var pattern = await urlAccessRepository.GetAccessPatternAsync(urlId, daysAgo);
         return JsonSerializer.Serialize(pattern);
     }
-    
+
     // public async Task<string> GetGeographicDistribution(Guid urlId, int daysAgo = 30)
     // {
     //     var distribution = await urlAccessRepository.GetGeographicDistributionAsync(urlId, daysAgo);

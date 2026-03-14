@@ -20,6 +20,6 @@ public class Url : Entity
 
     public void IncrementAccessCount()
     {
-        this.AccessCount++;
+        AccessCount++;
     }
 }

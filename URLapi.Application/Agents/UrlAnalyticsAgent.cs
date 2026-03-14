@@ -1,5 +1,4 @@
-﻿using GenerativeAI;
-using GenerativeAI.Microsoft;
+﻿using GenerativeAI.Microsoft;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 using URLapi.Application.AI.Tools;
@@ -16,19 +15,19 @@ public class UrlAnalyticsAgent
     {
         _plugin = new UrlAnalyticsPlugin(urlAccessRepository);
 
-        IChatClient client = new GenerativeAIChatClient(apiKey: apiKey, GoogleAIModels.Gemini25Flash);
-        
+        IChatClient client = new GenerativeAIChatClient(apiKey);
+
         _agent = new ChatClientAgent(client,
-            instructions: """
-                          Você é um assistente de análise de URLs.
-                          Você tem acesso a dados de acessos de links encurtados.
-                          Analise os dados e forneça insights acionáveis.
-                          Sempre cite números específicos e períodos.
-                          """,
+            """
+            Você é um assistente de análise de URLs.
+            Você tem acesso a dados de acessos de links encurtados.
+            Analise os dados e forneça insights acionáveis.
+            Sempre cite números específicos e períodos.
+            """,
             tools:
             [
                 AIFunctionFactory.Create(_plugin.GetTopUrls),
-                AIFunctionFactory.Create(_plugin.GetAccessPattern),
+                AIFunctionFactory.Create(_plugin.GetAccessPattern)
                 // AIFunctionFactory.Create(_plugin.GetGeographicDistribution),
                 // AIFunctionFactory.Create(_plugin.GetTrendingUrls)
             ]

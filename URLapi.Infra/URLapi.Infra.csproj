@@ -22,7 +22,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\URLapi.Application\URLapi.Application.csproj" />
+        <ProjectReference Include="..\URLapi.Application\URLapi.Application.csproj"/>
         <ProjectReference Include="..\URLapi.Domain\URLapi.Domain.csproj"/>
     </ItemGroup>
 

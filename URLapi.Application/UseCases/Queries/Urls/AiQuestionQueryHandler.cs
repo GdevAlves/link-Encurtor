@@ -1,6 +1,7 @@
-﻿﻿using System.Net;
+﻿using System.Net;
 using Flunt.Notifications;
 using Flunt.Validations;
+using URLapi.Application.Abstractions;
 using URLapi.Application.AI;
 using URLapi.Application.UseCases.Commands;
 using URLapi.Domain.IServices;
@@ -11,7 +12,7 @@ namespace URLapi.Application.UseCases.Queries.Urls;
 public class AiQuestionQueryHandler(
     AgentFactory agentFactory,
     ICurrentUserService currentUserService
-) : Abstractions.IQueryHandler<AiQuestionQuery, IResult>
+) : IQueryHandler<AiQuestionQuery, IResult>
 {
     public async ValueTask<IResult> Handle(AiQuestionQuery query, CancellationToken cancellationToken)
     {

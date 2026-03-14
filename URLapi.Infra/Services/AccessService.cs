@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using URLapi.Domain.IServices;
 
 namespace URLapi.Infra.Services;
@@ -22,10 +21,7 @@ public class AccessService(IHttpContextAccessor accessor) : IAccessService
     public string? GetUserAgent()
     {
         accessor.HttpContext.Request.Headers.TryGetValue("User-Agent", out var userAgent);
-        if  (string.IsNullOrEmpty(userAgent.ToString()))
-        {
-            userAgent = accessor.HttpContext.Request.Headers.UserAgent;
-        }
+        if (string.IsNullOrEmpty(userAgent.ToString())) userAgent = accessor.HttpContext.Request.Headers.UserAgent;
         return userAgent;
     }
 

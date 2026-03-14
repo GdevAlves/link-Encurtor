@@ -1,4 +1,4 @@
-﻿﻿namespace URLapi.Domain.Entities;
+﻿namespace URLapi.Domain.Entities;
 
 public class UrlAccessLog : Entity
 {
@@ -8,9 +8,8 @@ public class UrlAccessLog : Entity
 
     public UrlAccessLog()
     {
-        
     }
-    
+
     public Guid UrlId { get; set; }
     public Url Url { get; set; }
     public DateTime AccessedAt { get; set; }

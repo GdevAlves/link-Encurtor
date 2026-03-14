@@ -1,4 +1,4 @@
-﻿﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using URLapi.Domain.Entities;
 
@@ -9,9 +9,9 @@ public class UrlAccessLogMap : IEntityTypeConfiguration<UrlAccessLog>
     public void Configure(EntityTypeBuilder<UrlAccessLog> builder)
     {
         builder.ToTable("UrlAccessLog");
-        
+
         builder.HasKey(x => x.Id);
-        
+
         builder.Property(x => x.Id)
             .ValueGeneratedNever();
 
