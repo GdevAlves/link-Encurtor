@@ -29,7 +29,8 @@ public class AiQuestionQueryHandler(
 
         var agent = agentFactory.CreateUrlAnalyticsAgent();
 
-        var response = await agent.GetInsightsAsync(userId, query.Question);
+        var response = await agent.GetInsightsAsync(userId, query.Question, query.CurrentState, cancellationToken);
+        
         return new Result(HttpStatusCode.OK, true, "success", response);
     }
 }

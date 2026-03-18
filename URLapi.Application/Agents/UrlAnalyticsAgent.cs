@@ -1,4 +1,5 @@
-﻿using GenerativeAI.Microsoft;
+﻿using System.Text.Json;
+using GenerativeAI.Microsoft;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 using URLapi.Application.AI.Tools;
@@ -34,13 +35,28 @@ public class UrlAnalyticsAgent
         );
     }
 
-    public async Task<string> GetInsightsAsync(Guid userId, string question)
+    public async Task<object> GetInsightsAsync(Guid userId, string question, JsonElement? currentState, CancellationToken cancellationToken)
     {
         // Passa o userId no prompt para o modelo ter contexto ao chamar tools.
         // (AIAgent/tools não recebem parâmetros externos automaticamente.)
         var prompt = $"UserId: {userId}\nPergunta: {question}";
 
-        var response = await _agent.RunAsync(prompt);
-        return response.Text;
+        AgentSession session;
+        if (currentState == null)
+        {
+            session = await _agent.GetNewSessionAsync(cancellationToken);
+        }
+        else
+        {
+            session = await _agent.DeserializeSessionAsync(currentState.Value, cancellationToken: cancellationToken);
+        }
+
+        var response = await _agent.RunAsync(prompt, session, cancellationToken: cancellationToken);
+        
+        return new 
+        {
+            Answer = response.ToString(),
+            Session = session.Serialize()
+        };
     }
 }
