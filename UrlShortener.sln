@@ -6,7 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrlShortener.Domain", "UrlS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrlShortener.Infra", "UrlShortener.Infra\UrlShortener.Infra.csproj", "{ABD17886-B05E-444D-A4AB-0F2AFEF976B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "URLapi.Application", "URLapi.Application\URLapi.Application.csproj", "{9E876A9C-4A0E-4EE5-921D-BBB9B3F28538}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrlShortener.Application", "UrlShortener.Application\UrlShortener.Application.csproj", "{9E876A9C-4A0E-4EE5-921D-BBB9B3F28538}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

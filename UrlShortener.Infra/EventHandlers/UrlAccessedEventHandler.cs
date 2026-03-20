@@ -1,5 +1,5 @@
 ﻿using Mediator;
-using URLapi.Application.Events;
+using UrlShortener.Application.Events;
 using UrlShortener.Domain.IRepositories;
 
 namespace UrlShortener.Infra.EventHandlers;
