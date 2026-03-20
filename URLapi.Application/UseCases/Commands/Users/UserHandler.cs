@@ -4,10 +4,10 @@ using Flunt.Validations;
 using Mediator;
 using URLapi.Application.Abstractions;
 using URLapi.Application.DTOs.UserDTO;
-using URLapi.Domain.Entities;
-using URLapi.Domain.IRepositories;
-using URLapi.Domain.IServices;
-using URLapi.Domain.ValueObjects;
+using UrlShortener.Domain.Entities;
+using UrlShortener.Domain.IRepositories;
+using UrlShortener.Domain.IServices;
+using UrlShortener.Domain.ValueObjects;
 
 namespace URLapi.Application.UseCases.Commands.Users;
 

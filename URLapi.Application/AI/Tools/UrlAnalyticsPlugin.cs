@@ -1,5 +1,5 @@
 ﻿using System.Text.Json;
-using URLapi.Domain.IRepositories;
+using UrlShortener.Domain.IRepositories;
 
 namespace URLapi.Application.AI.Tools;
 

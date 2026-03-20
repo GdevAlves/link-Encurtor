@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using URLapi.Application.Agents;
-using URLapi.Domain.IRepositories;
+using UrlShortener.Domain.IRepositories;
 
 namespace URLapi.Application.AI;
 

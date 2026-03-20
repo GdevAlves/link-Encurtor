@@ -4,7 +4,7 @@ using Flunt.Validations;
 using URLapi.Application.Abstractions;
 using URLapi.Application.DTOs.UserDTO;
 using URLapi.Application.UseCases.Commands;
-using URLapi.Domain.IRepositories;
+using UrlShortener.Domain.IRepositories;
 
 namespace URLapi.Application.UseCases.Queries.Users;
 

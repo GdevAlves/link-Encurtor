@@ -4,7 +4,7 @@ using Flunt.Validations;
 using URLapi.Application.Abstractions;
 using URLapi.Application.AI;
 using URLapi.Application.UseCases.Commands;
-using URLapi.Domain.IServices;
+using UrlShortener.Domain.IServices;
 using IResult = URLapi.Application.Abstractions.IResult;
 
 namespace URLapi.Application.UseCases.Queries.Urls;

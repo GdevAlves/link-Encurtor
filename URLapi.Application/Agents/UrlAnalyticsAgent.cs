@@ -3,7 +3,7 @@ using GenerativeAI.Microsoft;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 using URLapi.Application.AI.Tools;
-using URLapi.Domain.IRepositories;
+using UrlShortener.Domain.IRepositories;
 
 namespace URLapi.Application.Agents;
 
