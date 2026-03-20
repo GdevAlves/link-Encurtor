@@ -1,8 +1,8 @@
 ﻿using Mediator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using URLapi.Application.UseCases.Commands.Urls;
-using URLapi.Application.UseCases.Queries.Urls;
+using UrlShortener.Application.UseCases.Commands.Urls;
+using UrlShortener.Application.UseCases.Queries.Urls;
 
 namespace UrlShortener.Api.Controllers;
 

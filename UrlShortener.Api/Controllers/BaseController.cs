@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using IResult = URLapi.Application.Abstractions.IResult;
+using IResult = UrlShortener.Application.Abstractions.IResult;
 
 namespace UrlShortener.Api.Controllers;
 

@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
-using URLapi.Application.AI;
+using UrlShortener.Application.AI;
 using UrlShortener.Domain.Config;
 using UrlShortener.Domain.IRepositories;
 using UrlShortener.Infra.Repositories;
