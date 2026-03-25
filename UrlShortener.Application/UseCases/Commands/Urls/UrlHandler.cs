@@ -22,8 +22,8 @@ public sealed class UrlHandler(
     {
         var contract = new Contract<Notification>()
             .Requires()
-            .IsUrl(request.BigUrl, "BigUrl", "Formato de url inválido.")
-            .IsNotNullOrEmpty(request.BigUrl, "BigUrl", "A Url a ser encurtada é obrigatória.");
+            .IsUrl(request.LongUrl, "LongUrl", "Formato de url inválido.")
+            .IsNotNullOrEmpty(request.LongUrl, "LongUrl", "A Url a ser encurtada é obrigatória.");
 
         if (!contract.IsValid) return new Result(ResultStatus.ValidationError, false, "Dados inválidos", contract);
 
@@ -41,7 +41,7 @@ public sealed class UrlHandler(
             if (exists != null)
                 return new Result(ResultStatus.Conflict, false, "A Url Já está em uso.");
 
-            var customUrl = new Url(user, request.BigUrl, request.WantedShortUrl);
+            var customUrl = new Url(user, request.LongUrl, request.WantedShortUrl);
             await urlRepository.SaveAsync(customUrl, cancellationToken);
 
             var customUrlDto = new UrlDTO
@@ -63,7 +63,7 @@ public sealed class UrlHandler(
             if (alreadyUsed is not null)
                 continue;
 
-            var url = new Url(user, request.BigUrl, shortUrl);
+            var url = new Url(user, request.LongUrl, shortUrl);
             await urlRepository.SaveAsync(url, cancellationToken);
 
             var urlDto = new UrlDTO

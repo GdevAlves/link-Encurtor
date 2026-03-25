@@ -35,7 +35,11 @@ public class UrlAnalyticsAgent
         );
     }
 
-    public async Task<object> GetInsightsAsync(Guid userId, string question, JsonElement? currentState, CancellationToken cancellationToken)
+    public async Task<(string Answer, JsonElement Session)> GetInsightsAsync(
+        Guid userId,
+        string question,
+        JsonElement? currentState,
+        CancellationToken cancellationToken)
     {
         // Passa o userId no prompt para o modelo ter contexto ao chamar tools.
         // (AIAgent/tools não recebem parâmetros externos automaticamente.)
@@ -53,10 +57,6 @@ public class UrlAnalyticsAgent
 
         var response = await _agent.RunAsync(prompt, session, cancellationToken: cancellationToken);
         
-        return new 
-        {
-            Answer = response.ToString(),
-            Session = session.Serialize()
-        };
+        return (response.ToString(), session.Serialize());
     }
 }

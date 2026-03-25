@@ -20,21 +20,15 @@ public sealed class UserQueryHandler(IUserRepository userRepository)
         if (!contract.IsValid)
             return new Result(ResultStatus.ValidationError, false, "Validação falhou", contract.Notifications);
 
-        try
-        {
-            var user = await userRepository.GetUserByIdAsync(query.UserId, cancellationToken);
-            if (user == null) return new Result(ResultStatus.NotFound, false, "Usuário não encontrado.");
+        var user = await userRepository.GetUserByIdAsync(query.UserId, cancellationToken);
+        if (user == null)
+            return new Result(ResultStatus.NotFound, false, "Usuário não encontrado.");
 
-            return new Result(ResultStatus.Success, true, "Usuário encontrado.", new UserAuthorizedDTO
-            {
-                Id = user.Id,
-                Email = user.Email.Address,
-                Name = user.Name
-            });
-        }
-        catch (Exception)
+        return new Result(ResultStatus.Success, true, "Usuário encontrado.", new UserAuthorizedDTO
         {
-            return new Result(ResultStatus.InternalError, false, "Erro ao buscar usuário.");
-        }
+            Id = user.Id,
+            Email = user.Email.Address,
+            Name = user.Name
+        });
     }
 }

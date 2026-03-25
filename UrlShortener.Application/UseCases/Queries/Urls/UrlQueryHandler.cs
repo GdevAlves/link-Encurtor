@@ -21,11 +21,11 @@ public class UrlQueryHandler(
     ICurrentUserService currentUserService,
     IMediator mediator
 )
-    : Abstractions.IQueryHandler<GetBigUrlByShortUrlQuery, Abstractions_IResult>,
+    : Abstractions.IQueryHandler<GetLongUrlByShortUrlQuery, Abstractions_IResult>,
         Abstractions.IQueryHandler<GetUrlInfoByShortUrlQuery, Abstractions_IResult>,
         Abstractions.IQueryHandler<GetUsersUrlsByUserIdQuery, Abstractions_IResult>
 {
-    public async ValueTask<Abstractions_IResult> Handle(GetBigUrlByShortUrlQuery query, CancellationToken cancellationToken)
+    public async ValueTask<Abstractions_IResult> Handle(GetLongUrlByShortUrlQuery query, CancellationToken cancellationToken)
     {
         var contract = new Contract<Notification>()
             .Requires()
@@ -99,47 +99,39 @@ public class UrlQueryHandler(
         if (!contract.IsValid)
             return new Result(ResultStatus.ValidationError, false, "Validação falhou",
                 contract.Notifications);
-        try
+        var userId = currentUserService.GetUserId();
+
+        if (userId != request.Id)
+            return new Result(ResultStatus.Forbidden, false,
+                "Você não está autorizado a acessar as URLs deste usuário.");
+
+        var page = request.Page;
+        var pageSize = request.PageSize;
+
+        var (userUrls, totalCount) = await urlRepository.GetUrlsByUserIdAsync(userId, page, pageSize, cancellationToken);
+
+        if (userUrls is null || (!userUrls.Any()))
+            return new Result(ResultStatus.NotFound, false, "Nenhuma URL encontrada para este usuário.");
+
+        var urlDtos = userUrls.Select(url => new UrlDTO
         {
-            var userId = currentUserService.GetUserId();
+            Id = url.Id,
+            LongUrl = url.LongUrl,
+            ShortUrl = url.ShortUrl,
+            AccessCount = url.AccessCount
+        }).ToArray();
 
-            if (userId != request.Id)
-                return new Result(ResultStatus.Forbidden, false,
-                    "Você não está autorizado a acessar as URLs deste usuário.");
+        var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
 
-            var page = request.Page;
-            var pageSize = request.PageSize;
-
-            var (userUrls, totalCount) = await urlRepository.GetUrlsByUserIdAsync(userId, page, pageSize, cancellationToken);
-
-            if (userUrls is null || (!userUrls.Any()))
-                return new Result(ResultStatus.NotFound, false, "Nenhuma URL encontrada para este usuário.");
-
-            var urlDtos = userUrls.Select(url => new UrlDTO
-            {
-                Id = url.Id,
-                LongUrl = url.LongUrl,
-                ShortUrl = url.ShortUrl,
-                AccessCount = url.AccessCount
-            }).ToArray();
-
-            var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
-
-            var pagination = new PaginationDto<IEnumerable<UrlDTO>>
-            {
-                Data = urlDtos,
-                Page = page,
-                PageSize = pageSize,
-                TotalPages = totalPages,
-                TotalCount = totalCount
-            };
-
-            return new Result(ResultStatus.Success, true, "success", pagination);
-        }
-        catch (Exception e)
+        var pagination = new PaginationDto<IEnumerable<UrlDTO>>
         {
-            Console.WriteLine(e);
-            return new Result(ResultStatus.InternalError, false, "Ocorreu um erro ao processar a solicitação.");
-        }
+            Data = urlDtos,
+            Page = page,
+            PageSize = pageSize,
+            TotalPages = totalPages,
+            TotalCount = totalCount
+        };
+
+        return new Result(ResultStatus.Success, true, "success", pagination);
     }
 }

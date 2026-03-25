@@ -23,7 +23,7 @@ public class UrlController(IMediator mediator) : BaseController
     [HttpGet("{shortUrl}")]
     public async Task<IActionResult> Get(string shortUrl)
     {
-        var query = new GetBigUrlByShortUrlQuery(shortUrl)
+        var query = new GetLongUrlByShortUrlQuery(shortUrl)
         {
             ShortUrl = shortUrl
         };

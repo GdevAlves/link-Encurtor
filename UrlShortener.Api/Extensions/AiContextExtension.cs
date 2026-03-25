@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using StackExchange.Redis;
 using UrlShortener.Application.AI;
 using UrlShortener.Domain.Config;
 using UrlShortener.Domain.IRepositories;
@@ -11,9 +12,19 @@ public static class AiContextExtension
     public static void AddAiContext(this WebApplicationBuilder builder)
     {
         builder.Services.Configure<GeminiSettings>(builder.Configuration.GetSection(GeminiSettings.SectionName));
+        builder.Services.Configure<RedisSessionSettings>(builder.Configuration.GetSection(RedisSessionSettings.SectionName));
+
+        builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
+        {
+            var redisSettings = sp.GetRequiredService<IOptions<RedisSessionSettings>>().Value;
+            return ConnectionMultiplexer.Connect(redisSettings.ConnectionString);
+        });
+
+        builder.Services.AddSingleton(sp => sp.GetRequiredService<IOptions<RedisSessionSettings>>().Value);
 
         // Repository needed by analytics plugin/tools
         builder.Services.AddScoped<IUrlAccessRepository, UrlAccessRepository>();
+        builder.Services.AddScoped<IAnalyticsConversationSessionRepository, AnalyticsConversationSessionRepository>();
 
         // Factory used by query handlers to create the agent
         builder.Services.AddScoped<AgentFactory>(sp =>

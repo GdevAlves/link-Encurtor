@@ -1,0 +1,60 @@
+﻿services:
+  mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: urlshortener
+      MYSQL_USER: urlapi
+      MYSQL_PASSWORD: SenhaSegura123!
+      MYSQL_ROOT_PASSWORD: RootSenhaSegura123!
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-pRootSenhaSegura123!"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+  urlshortener.api:
+    image: urlshortener.api
+    build:
+      context: .
+      dockerfile: UrlShortener.Api/Dockerfile
+    environment:
+      Redis__ConnectionString: redis:6379
+      ConnectionStrings__DefaultConnection: Server=mysql;Port=3306;Database=urlshortener;Uid=urlapi;Pwd=SenhaSegura123!;
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  urlshortener.application:
+    image: urlshortener.application
+    build:
+      context: .
+      dockerfile: UrlShortener.Application/Dockerfile
+
+  urlshortener.domain:
+    image: urlshortener.domain
+    build:
+      context: .
+      dockerfile: UrlShortener.Domain/Dockerfile
+
+  urlshortener.infra:
+    image: urlshortener.infra
+    build:
+      context: .
+      dockerfile: UrlShortener.Infra/Dockerfile
+
+volumes:
+  mysql_data:
+

@@ -1,10 +1,9 @@
-﻿using System.Text.Json;
-using UrlShortener.Application.Abstractions;
+﻿using UrlShortener.Application.Abstractions;
 
 namespace UrlShortener.Application.UseCases.Queries.Urls;
 
-public class AiQuestionQuery(string question, JsonElement? currentState) : IQuery<IResult>
+public class AiQuestionQuery(string question, Guid? conversationId = null) : IQuery<IResult>
 {
     public required string Question { get; init; } = question;
-    public JsonElement? CurrentState { get; init; } = currentState;
+    public Guid? ConversationId { get; init; } = conversationId;
 }
