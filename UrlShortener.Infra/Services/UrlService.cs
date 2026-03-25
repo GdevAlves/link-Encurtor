@@ -1,25 +1,48 @@
-﻿using System.Text;
+﻿using System.Security.Cryptography;
+using System.Text;
 using UrlShortener.Domain.IServices;
 
 namespace UrlShortener.Infra.Services;
 
 public class UrlService : IUrlService
 {
-    private readonly int _size = 16;
+    private const string Base62Chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    private const int ShortUrlLength = 7;
 
     public string GenerateShortUrl()
     {
-        const string caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        var random = new Random();
-        var stringBuilder = new StringBuilder();
+        // Combina timestamp com bytes aleatórios criptograficamente seguros para reduzir colisões
+        var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        var randomBytes = RandomNumberGenerator.GetBytes(4);
 
-        for (var i = 0; i < _size; i++)
+        // Combina timestamp com random bytes para criar um valor único
+        var combinedValue = timestamp ^ BitConverter.ToUInt32(randomBytes, 0);
+
+        return EncodeBase62(combinedValue, ShortUrlLength);
+    }
+
+    private static string EncodeBase62(long value, int minLength)
+    {
+        if (value == 0)
+            return new string(Base62Chars[0], minLength);
+
+        var result = new StringBuilder();
+        var absValue = Math.Abs(value);
+
+        while (absValue > 0)
         {
-            var index = random.Next(caracteres.Length); // Escolhe caractere aleatório [8]
-            stringBuilder.Append(caracteres[index]);
+            var remainder = (int)(absValue % 62);
+            result.Insert(0, Base62Chars[remainder]);
+            absValue /= 62;
         }
 
+        // Preenche com caracteres aleatórios criptograficamente seguros se necessário
+        while (result.Length < minLength)
+        {
+            var randomIndex = RandomNumberGenerator.GetInt32(Base62Chars.Length);
+            result.Insert(0, Base62Chars[randomIndex]);
+        }
 
-        return stringBuilder.ToString();
+        return result.ToString();
     }
 }

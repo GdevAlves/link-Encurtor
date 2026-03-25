@@ -16,7 +16,7 @@ public class UserController(IMediator mediator) : BaseController
         CancellationToken cancellationToken)
     {
         var result = await mediator.Send(command, cancellationToken);
-        return HandleResult(result);
+        return HandleResult(result, isCreatedResource: true);
     }
 
     [HttpGet("{userId:guid}")]

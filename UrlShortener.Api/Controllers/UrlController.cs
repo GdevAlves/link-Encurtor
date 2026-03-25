@@ -17,7 +17,7 @@ public class UrlController(IMediator mediator) : BaseController
     )
     {
         var result = await mediator.Send(command);
-        return HandleResult(result);
+        return HandleResult(result, isCreatedResource: true);
     }
 
     [HttpGet("{shortUrl}")]

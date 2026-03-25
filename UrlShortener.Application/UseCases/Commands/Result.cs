@@ -1,16 +1,16 @@
-﻿using System.Net;
-using UrlShortener.Application.Abstractions;
+﻿using UrlShortener.Application.Abstractions;
+using UrlShortener.Application.Enums;
 
 namespace UrlShortener.Application.UseCases.Commands;
 
 public class Result(
-    HttpStatusCode httpStatusCode,
+    ResultStatus status,
     bool success,
     string? message = null,
     object? data = null)
     : IResult
 {
-    public HttpStatusCode HttpStatusCode { get; set; } = httpStatusCode;
+    public ResultStatus Status { get; } = status;
     public bool Success { get; } = success;
     public string Message { get; } = message ?? string.Empty;
     public object? Data { get; } = data;
@@ -30,8 +30,8 @@ public class Result(
         return this;
     }
 
-    public HttpStatusCode GetStatusCode()
+    public ResultStatus GetStatus()
     {
-        return HttpStatusCode;
+        return Status;
     }
 }

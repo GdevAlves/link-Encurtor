@@ -1,9 +1,9 @@
-﻿using System.Net;
-using Flunt.Notifications;
+﻿using Flunt.Notifications;
 using Flunt.Validations;
 using Mediator;
 using UrlShortener.Application.Abstractions;
 using UrlShortener.Application.DTOs.UrlDTO;
+using UrlShortener.Application.Enums;
 using UrlShortener.Domain.Entities;
 using UrlShortener.Domain.IRepositories;
 using UrlShortener.Domain.IServices;
@@ -25,42 +25,58 @@ public sealed class UrlHandler(
             .IsUrl(request.BigUrl, "BigUrl", "Formato de url inválido.")
             .IsNotNullOrEmpty(request.BigUrl, "BigUrl", "A Url a ser encurtada é obrigatória.");
 
-        if (!contract.IsValid) return new Result(HttpStatusCode.BadRequest, false, "Dados inválidos", contract);
+        if (!contract.IsValid) return new Result(ResultStatus.ValidationError, false, "Dados inválidos", contract);
 
         var userId = currentUserService.GetUserId();
 
         var user = await userRepository.GetUserByIdAsync(userId, cancellationToken);
 
         if (user == null)
-            return new Result(HttpStatusCode.Unauthorized, false, "Usuário não consta no banco de dados.");
+            return new Result(ResultStatus.Unauthorized, false, "Usuário não consta no banco de dados.");
 
-        var shortUrl = !string.IsNullOrEmpty(request.WantedShortUrl)
-            ? request.WantedShortUrl
-            : urlService.GenerateShortUrl();
-
-        var exists = await urlRepository.GetUrlByShortUrlAsync(shortUrl, cancellationToken);
-
-        if (!string.IsNullOrEmpty(request.WantedShortUrl) && exists != null)
-            return new Result(HttpStatusCode.Conflict, false, "A Url Já está em uso.");
-
-
-        while (exists is not null)
+        // Se o usuário especificou uma URL customizada, verifica se já existe
+        if (!string.IsNullOrEmpty(request.WantedShortUrl))
         {
-            shortUrl = urlService.GenerateShortUrl();
-            exists = await urlRepository.GetUrlByShortUrlAsync(shortUrl, cancellationToken);
+            var exists = await urlRepository.GetUrlByShortUrlAsync(request.WantedShortUrl, cancellationToken);
+            if (exists != null)
+                return new Result(ResultStatus.Conflict, false, "A Url Já está em uso.");
+
+            var customUrl = new Url(user, request.BigUrl, request.WantedShortUrl);
+            await urlRepository.SaveAsync(customUrl, cancellationToken);
+
+            var customUrlDto = new UrlDTO
+            {
+                Id = customUrl.Id,
+                LongUrl = customUrl.LongUrl,
+                ShortUrl = customUrl.ShortUrl
+            };
+            return new Result(ResultStatus.Success, true, "Url cadastrado com sucesso", customUrlDto);
         }
 
-        var url = new Url(user, request.BigUrl, shortUrl);
-
-        await urlRepository.SaveAsync(url, cancellationToken);
-
-        var urlDto = new UrlDTO
+        // Tenta gerar URL aleatória com retry em caso de colisão previsível.
+        const int maxRetries = 5;
+        for (var attempt = 0; attempt < maxRetries; attempt++)
         {
-            Id = url.Id,
-            LongUrl = url.LongUrl,
-            ShortUrl = url.ShortUrl
-        };
-        return new Result(HttpStatusCode.OK, true, "Url cadastrado com sucesso", urlDto);
+            var shortUrl = urlService.GenerateShortUrl();
+
+            var alreadyUsed = await urlRepository.GetUrlByShortUrlAsync(shortUrl, cancellationToken);
+            if (alreadyUsed is not null)
+                continue;
+
+            var url = new Url(user, request.BigUrl, shortUrl);
+            await urlRepository.SaveAsync(url, cancellationToken);
+
+            var urlDto = new UrlDTO
+            {
+                Id = url.Id,
+                LongUrl = url.LongUrl,
+                ShortUrl = url.ShortUrl
+            };
+            return new Result(ResultStatus.Success, true, "Url cadastrado com sucesso", urlDto);
+        }
+
+        return new Result(ResultStatus.Conflict, false,
+            "Não foi possível gerar uma URL única após múltiplas tentativas. Tente novamente.");
     }
 
     public async ValueTask<IResult> Handle(DeleteUrlCommand request, CancellationToken cancellationToken)
@@ -69,23 +85,23 @@ public sealed class UrlHandler(
             .Requires()
             .IsNotNullOrEmpty(request.Id.ToString(), "Id", "O Id da Url a ser deletada é obrigatório.");
 
-        if (!contract.IsValid) return new Result(HttpStatusCode.BadRequest, false, "Dados inválidos", contract);
+        if (!contract.IsValid) return new Result(ResultStatus.ValidationError, false, "Dados inválidos", contract);
 
         var userId = currentUserService.GetUserId();
 
         var user = await userRepository.GetUserByIdAsync(userId, cancellationToken);
 
         if (user == null)
-            return new Result(HttpStatusCode.Unauthorized, false, "Usuário não consta no banco de dados.");
+            return new Result(ResultStatus.Unauthorized, false, "Usuário não consta no banco de dados.");
 
         var url = await urlRepository.GetUrlByIdAsync(request.Id, cancellationToken);
 
         if (url is null)
-            return new Result(HttpStatusCode.NotFound, false, "Url não encontrada.");
+            return new Result(ResultStatus.NotFound, false, "Url não encontrada.");
 
-        if (url.Creator.Id != user.Id) return new Result(HttpStatusCode.Unauthorized, false, "Não autorizado.");
+        if (url.Creator.Id != user.Id) return new Result(ResultStatus.Unauthorized, false, "Não autorizado.");
 
         await urlRepository.DeleteUrlAsync(url, cancellationToken);
-        return new Result(HttpStatusCode.OK, true, "Url deletado com sucesso.");
+        return new Result(ResultStatus.Success, true, "Url deletado com sucesso.");
     }
 }

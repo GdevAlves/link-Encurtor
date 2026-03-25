@@ -1,9 +1,9 @@
-﻿using System.Net;
-using Flunt.Notifications;
+﻿using Flunt.Notifications;
 using Flunt.Validations;
 using Mediator;
 using UrlShortener.Application.DTOs.UrlDTO;
 using UrlShortener.Application.DTOs.UtilsDTO;
+using UrlShortener.Application.Enums;
 using UrlShortener.Application.Events;
 using UrlShortener.Application.UseCases.Commands;
 using UrlShortener.Domain.Entities;
@@ -32,14 +32,14 @@ public class UrlQueryHandler(
             .IsNotEmpty(query.ShortUrl, "ShortUrl", "A URL é obrigatória.");
 
         if (!contract.IsValid)
-            return new Result(HttpStatusCode.BadRequest, false, "Validação falhou",
+            return new Result(ResultStatus.ValidationError, false, "Validação falhou",
                 contract.Notifications);
 
         var shortUrl = query.ShortUrl;
         var bigUrl = await urlRepository.GetUrlByShortUrlAsync(shortUrl, cancellationToken);
 
         if (bigUrl == null)
-            return new Result(HttpStatusCode.NotFound, false, "URL not found.");
+            return new Result(ResultStatus.NotFound, false, "URL not found.");
 
         await mediator.Publish(new UrlAccessedEvent(bigUrl.Id), cancellationToken);
 
@@ -55,7 +55,7 @@ public class UrlQueryHandler(
         };
 
         await urlAccessRepository.SaveAsync(access, cancellationToken);
-        return new Result(HttpStatusCode.OK, true, "success", bigUrl.LongUrl);
+        return new Result(ResultStatus.Success, true, "success", bigUrl.LongUrl);
     }
 
     public async ValueTask<Abstractions_IResult> Handle(GetUrlInfoByShortUrlQuery query, CancellationToken cancellationToken)
@@ -64,7 +64,7 @@ public class UrlQueryHandler(
             .Requires()
             .IsNotEmpty(query.ShortUrl, "ShortUrl", "A URL é obrigatória.");
         if (!contract.IsValid)
-            return new Result(HttpStatusCode.BadRequest, false, "Validação falhou",
+            return new Result(ResultStatus.ValidationError, false, "Validação falhou",
                 contract.Notifications);
 
         var userId = currentUserService.GetUserId();
@@ -73,10 +73,10 @@ public class UrlQueryHandler(
 
         var bigUrl = await urlRepository.GetUrlByShortUrlWithCreatorAsync(shortUrl, cancellationToken);
 
-        if (bigUrl == null) return new Result(HttpStatusCode.NotFound, false, "URL not found.");
+        if (bigUrl == null) return new Result(ResultStatus.NotFound, false, "URL not found.");
 
         if (bigUrl.Creator.Id != userId)
-            return new Result(HttpStatusCode.Forbidden, false,
+            return new Result(ResultStatus.Forbidden, false,
                 "Você não está autorizado a acessar esta URL.");
 
         var urlDto = new UrlDTO
@@ -86,7 +86,7 @@ public class UrlQueryHandler(
             LongUrl = bigUrl.LongUrl,
             AccessCount = bigUrl.AccessCount
         };
-        return new Result(HttpStatusCode.OK, true, "success", urlDto);
+        return new Result(ResultStatus.Success, true, "success", urlDto);
     }
 
     public async ValueTask<Abstractions_IResult> Handle(GetUsersUrlsByUserIdQuery request, CancellationToken cancellationToken)
@@ -97,14 +97,14 @@ public class UrlQueryHandler(
             .IsGreaterThan(request.Page, 0, "Page", "A página deve ser maior que zero.")
             .IsGreaterThan(request.PageSize, 0, "PageSize", "O tamanho da página deve ser maior que zero.");
         if (!contract.IsValid)
-            return new Result(HttpStatusCode.BadRequest, false, "Validação falhou",
+            return new Result(ResultStatus.ValidationError, false, "Validação falhou",
                 contract.Notifications);
         try
         {
             var userId = currentUserService.GetUserId();
 
             if (userId != request.Id)
-                return new Result(HttpStatusCode.Forbidden, false,
+                return new Result(ResultStatus.Forbidden, false,
                     "Você não está autorizado a acessar as URLs deste usuário.");
 
             var page = request.Page;
@@ -113,7 +113,7 @@ public class UrlQueryHandler(
             var (userUrls, totalCount) = await urlRepository.GetUrlsByUserIdAsync(userId, page, pageSize, cancellationToken);
 
             if (userUrls is null || (!userUrls.Any()))
-                return new Result(HttpStatusCode.NotFound, false, "Nenhuma URL encontrada para este usuário.");
+                return new Result(ResultStatus.NotFound, false, "Nenhuma URL encontrada para este usuário.");
 
             var urlDtos = userUrls.Select(url => new UrlDTO
             {
@@ -134,12 +134,12 @@ public class UrlQueryHandler(
                 TotalCount = totalCount
             };
 
-            return new Result(HttpStatusCode.OK, true, "success", pagination);
+            return new Result(ResultStatus.Success, true, "success", pagination);
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
-            return new Result(HttpStatusCode.InternalServerError, false, "Ocorreu um erro ao processar a solicitação.");
+            return new Result(ResultStatus.InternalError, false, "Ocorreu um erro ao processar a solicitação.");
         }
     }
 }

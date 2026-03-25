@@ -1,8 +1,8 @@
-﻿using System.Net;
-using Flunt.Notifications;
+﻿using Flunt.Notifications;
 using Flunt.Validations;
 using UrlShortener.Application.Abstractions;
 using UrlShortener.Application.DTOs.UserDTO;
+using UrlShortener.Application.Enums;
 using UrlShortener.Application.UseCases.Commands;
 using UrlShortener.Domain.IRepositories;
 
@@ -18,14 +18,14 @@ public sealed class UserQueryHandler(IUserRepository userRepository)
             .IsNotEmpty(query.UserId, "UserId", "O ID do usuário é obrigatório");
 
         if (!contract.IsValid)
-            return new Result(HttpStatusCode.BadRequest, false, "Validação falhou", contract.Notifications);
+            return new Result(ResultStatus.ValidationError, false, "Validação falhou", contract.Notifications);
 
         try
         {
             var user = await userRepository.GetUserByIdAsync(query.UserId, cancellationToken);
-            if (user == null) return new Result(HttpStatusCode.NotFound, false, "Usuário não encontrado.");
+            if (user == null) return new Result(ResultStatus.NotFound, false, "Usuário não encontrado.");
 
-            return new Result(HttpStatusCode.OK, true, "Usuário encontrado.", new UserAuthorizedDTO
+            return new Result(ResultStatus.Success, true, "Usuário encontrado.", new UserAuthorizedDTO
             {
                 Id = user.Id,
                 Email = user.Email.Address,
@@ -34,7 +34,7 @@ public sealed class UserQueryHandler(IUserRepository userRepository)
         }
         catch (Exception)
         {
-            return new Result(HttpStatusCode.InternalServerError, false, "Erro ao buscar usuário.");
+            return new Result(ResultStatus.InternalError, false, "Erro ao buscar usuário.");
         }
     }
 }

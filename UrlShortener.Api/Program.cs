@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Scalar.AspNetCore;
+using UrlShortener.Api.ExceptionHandling;
 using UrlShortener.Api.Extensions;
 using UrlShortener.Infra.Data;
 
@@ -8,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 // Add CORS policy
 builder.Services.AddCors(options =>
@@ -85,6 +88,7 @@ builder.AddUrlContext();
 
 var app = builder.Build();
 
+app.UseExceptionHandler();
 app.UseHttpsRedirection();
 app.UseCors("AllowSwagger");
 app.UseCors("AllowAll");
