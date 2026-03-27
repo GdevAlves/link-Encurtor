@@ -85,8 +85,7 @@ public class UrlController(IMediator mediator) : BaseController
         var result = await mediator.Send(command);
         return HandleResult(result);
     }
-
-    // TODO Rotas/Controller de analytcs 
+    
     [Authorize]
     [HttpPost("ai")]
     public async Task<IActionResult> AiQuestion([FromBody] AiQuestionQuery query)

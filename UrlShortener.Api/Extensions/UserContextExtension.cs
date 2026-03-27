@@ -20,7 +20,27 @@ public static class UserContextExtension
 
         builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 
-        builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+        var jwtSection = builder.Configuration.GetSection(JwtSettings.SectionName);
+        var jwtSecret = jwtSection["Secret"];
+
+        // Support local runs where developers set JWT_SECRET in shell/.env tooling.
+        if (string.IsNullOrWhiteSpace(jwtSecret)) jwtSecret = builder.Configuration["JWT_SECRET"];
+
+        builder.Services
+            .AddOptions<JwtSettings>()
+            .Bind(jwtSection)
+            .PostConfigure(options =>
+            {
+                if (string.IsNullOrWhiteSpace(options.Secret) && !string.IsNullOrWhiteSpace(jwtSecret))
+                    options.Secret = jwtSecret;
+            })
+            .Validate(options => !string.IsNullOrWhiteSpace(options.Secret),
+                "JWT secret is required. Configure JwtSettings:Secret or environment variable JWT_SECRET.")
+            .Validate(options => options.Secret.Length >= 32,
+                "JWT secret must be at least 32 characters long.")
+            .Validate(options => !string.IsNullOrWhiteSpace(options.Issuer), "JwtSettings:Issuer is required.")
+            .Validate(options => !string.IsNullOrWhiteSpace(options.Audience), "JwtSettings:Audience is required.")
+            .ValidateOnStart();
 
         builder.Services.AddScoped<IAuthService, JwtService>();
 
@@ -29,6 +49,10 @@ public static class UserContextExtension
 
         builder.Services.AddScoped<IVerifyUserService, EmailService>();
         builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+        if (string.IsNullOrWhiteSpace(jwtSecret))
+            throw new InvalidOperationException(
+                "JWT secret is not configured. Set JwtSettings:Secret (or JwtSettings__Secret) or JWT_SECRET.");
+
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
@@ -42,7 +66,7 @@ public static class UserContextExtension
                     ValidAudience = builder.Configuration["JwtSettings:Audience"],
 
                     IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Secret"]!)
+                        Encoding.UTF8.GetBytes(jwtSecret)
                     )
                 };
             }

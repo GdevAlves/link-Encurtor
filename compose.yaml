@@ -3,16 +3,16 @@
     image: mysql:8.0
     restart: unless-stopped
     environment:
-      MYSQL_DATABASE: urlshortener
-      MYSQL_USER: urlapi
-      MYSQL_PASSWORD: SenhaSegura123!
-      MYSQL_ROOT_PASSWORD: RootSenhaSegura123!
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     ports:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-pRootSenhaSegura123!"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${MYSQL_ROOT_PASSWORD}"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -29,8 +29,9 @@
       context: .
       dockerfile: UrlShortener.Api/Dockerfile
     environment:
-      Redis__ConnectionString: redis:6379
-      ConnectionStrings__DefaultConnection: Server=mysql;Port=3306;Database=urlshortener;Uid=urlapi;Pwd=SenhaSegura123!;
+      Redis__ConnectionString: ${REDIS_CONNECTION_STRING}
+      ConnectionStrings__DefaultConnection: Server=mysql;Port=3306;Database=${MYSQL_DATABASE};Uid=${MYSQL_USER};Pwd=${MYSQL_PASSWORD};
+      JwtSettings__Secret: ${JWT_SECRET}
     depends_on:
       mysql:
         condition: service_healthy
